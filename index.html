@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>预约我的时间</title>
+  <title>预约申请</title>
   <style>
     * { box-sizing: border-box; }
 
@@ -15,14 +15,14 @@
     }
 
     .container {
-      max-width: 980px;
+      max-width: 1080px;
       margin: 0 auto;
       padding: 32px 16px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: 1.05fr 0.95fr;
       gap: 20px;
     }
 
@@ -34,18 +34,21 @@
     }
 
     h1 {
-      font-size: 32px;
+      font-size: 30px;
       margin: 8px 0 10px;
+      font-weight: 700;
     }
 
     h2 {
       font-size: 22px;
       margin: 0 0 12px;
+      font-weight: 700;
     }
 
     p {
       line-height: 1.7;
       color: #4b5563;
+      margin: 0;
     }
 
     .muted {
@@ -71,6 +74,7 @@
       background: #fff;
       cursor: pointer;
       transition: 0.2s ease;
+      color: #111827;
     }
 
     .date-btn {
@@ -109,6 +113,11 @@
       font-size: 14px;
     }
 
+    .summary-row {
+      margin-top: 8px;
+      color: #374151;
+    }
+
     label {
       display: block;
       font-size: 14px;
@@ -117,7 +126,7 @@
       color: #374151;
     }
 
-    input, textarea {
+    input, textarea, select {
       width: 100%;
       border: 1px solid #e5e7eb;
       border-radius: 12px;
@@ -125,9 +134,10 @@
       font-size: 14px;
       outline: none;
       background: #fff;
+      color: #111827;
     }
 
-    input:focus, textarea:focus {
+    input:focus, textarea:focus, select:focus {
       border-color: #6b7280;
     }
 
@@ -175,10 +185,32 @@
       display: none;
     }
 
+    .note-box {
+      margin-top: 18px;
+      border: 1px solid #e5e7eb;
+      background: #fafafa;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .note-box h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      color: #111827;
+    }
+
+    .note-box ul {
+      margin: 0;
+      padding-left: 18px;
+      color: #4b5563;
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
     @media (max-width: 800px) {
       .grid { grid-template-columns: 1fr; }
       .date-grid { grid-template-columns: 1fr; }
-      h1 { font-size: 28px; }
+      h1 { font-size: 26px; }
     }
   </style>
 </head>
@@ -186,56 +218,88 @@
   <div class="container">
     <div class="grid">
       <div class="card">
-        <div class="muted">Personal booking page</div>
-        <h1>预约我的时间</h1>
+        <div class="muted">Online Appointment Request</div>
+        <h1>预约申请</h1>
         <p>
-          朋友可以直接打开这个链接，选择一个你开放的时间段，然后提交预约请求。
-          这是一个非常轻量的版本：不需要你自己写后端，不需要数据库，部署也几乎零成本。
+          请在本页面选择日期与时间，并填写基本信息后提交申请。提交成功后，相关内容将直接发送至指定邮箱，以便后续确认与安排。
         </p>
 
-        <div class="section-title">选择日期</div>
+        <div class="section-title">快速选择日期</div>
         <div class="date-grid" id="dateGrid"></div>
 
-        <div class="section-title">选择时间段</div>
+        <div class="section-title">快速选择时间段</div>
         <div class="time-list" id="timeList"></div>
 
+        <div class="section-title">自定义日期与时间</div>
+        <div class="field">
+          <label for="customDate">日期</label>
+          <input id="customDate" type="date" />
+        </div>
+        <div class="field">
+          <label for="customTime">时间</label>
+          <input id="customTime" type="time" />
+        </div>
+
         <div class="summary">
-          <div><strong>当前选择：</strong></div>
-          <div id="selectionText" style="margin-top: 8px;">-</div>
-          <div style="margin-top: 8px; color: #6b7280;">
-            你可以把这里改成：约饭、喝咖啡、出去玩、看电影、见面聊天等。
-          </div>
+          <div><strong>当前预约信息</strong></div>
+          <div class="summary-row">日期与时间：<span id="selectionText">-</span></div>
+          <div class="summary-row">提交方式：在线表单邮件转发</div>
+        </div>
+
+        <div class="note-box">
+          <h3>说明</h3>
+          <ul>
+            <li>可使用上方快速选项，也可直接手动填写日期与时间。</li>
+            <li>系统允许选择任意日期与时间，包括历史时间。</li>
+            <li>提交后将进入邮箱处理流程，是否最终确认以人工回复为准。</li>
+          </ul>
         </div>
       </div>
 
       <div class="card">
-        <h2>提交预约</h2>
-        <p class="muted">点击提交后，预约请求会直接发到你的邮箱，不依赖对方本地邮箱客户端。</p>
+        <h2>提交申请</h2>
+        <p class="muted">表单提交后，预约内容将直接发送至收件邮箱，不依赖访问者本地邮箱客户端。</p>
 
         <form id="bookingForm">
           <input type="hidden" name="access_key" value="ffbf96cd-f8c0-4857-9e6e-2c613f92ada1" />
-          <input type="hidden" name="subject" value="新的预约请求" />
-          <input type="hidden" name="from_name" value="Yuqing Booking Page" />
+          <input type="hidden" name="subject" value="新的预约申请" />
+          <input type="hidden" name="from_name" value="Appointment Request Page" />
           <input type="hidden" id="selectedDateInput" name="date" value="" />
           <input type="hidden" id="selectedTimeInput" name="time" value="" />
 
           <div class="field">
-            <label for="name">名字</label>
-            <input id="name" name="name" type="text" placeholder="例如：Zhang Yang" required />
+            <label for="name">姓名</label>
+            <input id="name" name="name" type="text" placeholder="请输入姓名" required />
           </div>
 
           <div class="field">
             <label for="contact">联系方式</label>
-            <input id="contact" name="contact" type="text" placeholder="微信 / 手机号 / 邮箱" required />
+            <input id="contact" name="contact" type="text" placeholder="请输入邮箱、手机号或其他联系方式" required />
           </div>
 
           <div class="field">
-            <label for="note">备注</label>
-            <textarea id="note" name="note" placeholder="例如：想约你周三晚饭，地点可以在市中心"></textarea>
+            <label for="urgency">紧迫程度</label>
+            <select id="urgency" name="urgency" required>
+              <option value="">请选择紧迫程度</option>
+              <option value="低">低</option>
+              <option value="中">中</option>
+              <option value="高">高</option>
+              <option value="非常紧急">非常紧急</option>
+            </select>
           </div>
 
-          <button class="submit-btn" type="submit">发送预约请求</button>
-          <div class="tip" id="successTip">预约请求已成功发送到你的邮箱。</div>
+          <div class="field">
+            <label for="purpose">申请事项</label>
+            <input id="purpose" name="purpose" type="text" placeholder="请简要说明预约目的" required />
+          </div>
+
+          <div class="field">
+            <label for="note">补充说明</label>
+            <textarea id="note" name="note" placeholder="如有其他需要说明的内容，可填写于此"></textarea>
+          </div>
+
+          <button class="submit-btn" type="submit">提交预约申请</button>
+          <div class="tip" id="successTip">预约申请已成功提交。</div>
           <div class="error-tip" id="errorTip">提交失败，请稍后重试。</div>
         </form>
       </div>
@@ -244,9 +308,12 @@
 
   <script>
     const slots = [
-      { date: '2026-03-24', weekday: 'Tuesday', times: ['10:00', '14:00', '16:00'] },
-      { date: '2026-03-25', weekday: 'Wednesday', times: ['11:00', '15:00', '19:00'] },
-      { date: '2026-03-27', weekday: 'Friday', times: ['13:00', '18:00'] }
+      { date: '2026-03-22', weekday: 'Sunday', times: ['08:00', '10:00', '14:00', '16:00', '19:00', '21:00'] },
+      { date: '2026-03-23', weekday: 'Monday', times: ['09:00', '11:00', '13:00', '15:00', '18:00', '20:00'] },
+      { date: '2026-03-24', weekday: 'Tuesday', times: ['08:30', '10:30', '12:30', '14:30', '17:30', '20:30'] },
+      { date: '2026-03-25', weekday: 'Wednesday', times: ['09:00', '12:00', '15:00', '18:00', '20:00', '22:00'] },
+      { date: '2026-03-26', weekday: 'Thursday', times: ['08:00', '11:00', '14:00', '16:00', '19:00', '21:00'] },
+      { date: '2026-03-27', weekday: 'Friday', times: ['09:30', '12:30', '15:30', '18:30', '20:30', '22:30'] }
     ];
 
     let selectedDate = slots[0].date;
@@ -260,6 +327,8 @@
     const errorTip = document.getElementById('errorTip');
     const selectedDateInput = document.getElementById('selectedDateInput');
     const selectedTimeInput = document.getElementById('selectedTimeInput');
+    const customDateInput = document.getElementById('customDate');
+    const customTimeInput = document.getElementById('customTime');
 
     function renderDates() {
       dateGrid.innerHTML = '';
@@ -275,6 +344,8 @@
         btn.onclick = () => {
           selectedDate = slot.date;
           selectedTime = slot.times[0];
+          customDateInput.value = slot.date;
+          customTimeInput.value = slot.times[0];
           renderDates();
           renderTimes();
           renderSummary();
@@ -284,7 +355,7 @@
     }
 
     function renderTimes() {
-      const current = slots.find(s => s.date === selectedDate);
+      const current = slots.find(s => s.date === selectedDate) || slots[0];
       timeList.innerHTML = '';
       current.times.forEach(time => {
         const btn = document.createElement('button');
@@ -293,6 +364,7 @@
         btn.textContent = time;
         btn.onclick = () => {
           selectedTime = time;
+          customTimeInput.value = time;
           renderTimes();
           renderSummary();
         };
@@ -301,15 +373,36 @@
     }
 
     function renderSummary() {
-      selectionText.textContent = `${selectedDate} · ${selectedTime}`;
+      selectionText.textContent = `${selectedDate} ${selectedTime}`;
       selectedDateInput.value = selectedDate;
       selectedTimeInput.value = selectedTime;
     }
+
+    customDateInput.addEventListener('change', function () {
+      if (customDateInput.value) {
+        selectedDate = customDateInput.value;
+        renderDates();
+        renderTimes();
+        renderSummary();
+      }
+    });
+
+    customTimeInput.addEventListener('change', function () {
+      if (customTimeInput.value) {
+        selectedTime = customTimeInput.value;
+        renderTimes();
+        renderSummary();
+      }
+    });
 
     bookingForm.addEventListener('submit', async function (e) {
       e.preventDefault();
       successTip.style.display = 'none';
       errorTip.style.display = 'none';
+
+      if (customDateInput.value) selectedDate = customDateInput.value;
+      if (customTimeInput.value) selectedTime = customTimeInput.value;
+      renderSummary();
 
       const formData = new FormData(bookingForm);
 
@@ -324,9 +417,10 @@
         if (result.success) {
           successTip.style.display = 'block';
           bookingForm.reset();
-
           selectedDate = slots[0].date;
           selectedTime = slots[0].times[0];
+          customDateInput.value = selectedDate;
+          customTimeInput.value = selectedTime;
           renderDates();
           renderTimes();
           renderSummary();
@@ -340,6 +434,8 @@
       }
     });
 
+    customDateInput.value = selectedDate;
+    customTimeInput.value = selectedTime;
     renderDates();
     renderTimes();
     renderSummary();
